@@ -1,7 +1,6 @@
 package com.revature.ers;
 
 import com.revature.ers.models.User;
-import com.revature.ers.models.UserRole;
 
 public class Driver {
     public static void main(String[] args) {
