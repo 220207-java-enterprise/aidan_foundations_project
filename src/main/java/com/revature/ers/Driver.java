@@ -1,20 +1,13 @@
 package com.revature.ers;
 
-import com.revature.ers.models.User;
+import com.revature.ers.util.ConnectionFactory;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class Driver {
-    public static void main(String[] args) {
-       User guy = new User(
-               "1",
-               "guy",
-               "guy@email.com",
-               "password",
-               "guy",
-               "sir",
-               "1"
-       );
-       System.out.println(guy.getIsActive());
-       guy.toggleIsActive();
-       System.out.println(guy.getIsActive());
+    public static void main(String[] args) throws SQLException {
+        Connection myConnection = ConnectionFactory.getInstance().getConnection();
+        System.out.println(myConnection.toString());
     }
 }
