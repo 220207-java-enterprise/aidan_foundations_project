@@ -19,4 +19,23 @@ public interface CrudDAO<T> {
     // DELETE
     void deleteById(String id);
 
+    default String createUpdateQuery (
+            String tableName,
+            String idType,
+            String id,
+            List<String> columnNames
+    ) {
+        System.out.println("columnNames: " + columnNames.toString());
+
+        StringBuilder columnUpdates = new StringBuilder();
+
+        for (String s : columnNames) {
+            s = s + "=?, ";
+            columnUpdates.append(s);
+        }
+
+        return "UPDATE " + tableName + " " +
+               "SET " + columnUpdates +
+               "WHERE " + idType + "=" + id;
+    }
 }

@@ -90,6 +90,16 @@ public class UserDAO implements CrudDAO<User> {
     @Override
     public void update(String id, User updatedUser) {
 
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            conn.setAutoCommit(false);
+            PreparedStatement pstmt = conn.prepareStatement(
+                ""
+            );
+
+        } catch (SQLException e) {
+            throw new DataSourceException(e);
+        }
     }
 
     @Override
