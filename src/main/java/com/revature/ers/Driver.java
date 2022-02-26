@@ -1,6 +1,7 @@
 package com.revature.ers;
 
 import com.revature.ers.daos.UserDAO;
+import com.revature.ers.models.Update;
 import com.revature.ers.models.User;
 
 import java.util.List;
@@ -20,15 +21,22 @@ public class Driver {
             "1"
         );
 
-        // userDAO.save(testUser);
-
-        // System.out.println(userDAO.getById("1").toString());
         List<String> columnNames = new ArrayList<>();
-
         columnNames.add("given_name");
         columnNames.add("surname");
 
-        String updateQuery = userDAO.createUpdateQuery("ers_users", "user_id", "1", columnNames);
-        System.out.println(updateQuery);
+        List<String> columnUpdates = new ArrayList<>();
+        columnUpdates.add("Billy");
+        columnUpdates.add("Bob");
+
+        Update update = new Update(
+            "ers_users",
+            "user_id",
+            "1",
+            columnNames,
+            columnUpdates
+        );
+
+        userDAO.update(update);
     }
 }

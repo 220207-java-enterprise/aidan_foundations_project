@@ -1,5 +1,6 @@
 package com.revature.ers.daos;
 
+import com.revature.ers.models.Update;
 import com.revature.ers.models.User;
 import com.revature.ers.util.ConnectionFactory;
 import com.revature.ers.util.exceptions.DataSourceException;
@@ -38,7 +39,7 @@ public class UserDAO implements CrudDAO<User> {
             pstmt.setString(7, newUser.getRoleId());
 
             int rowsInserted = pstmt.executeUpdate();
-            System.out.println(rowsInserted);
+
             if (rowsInserted != 1) {
                 conn.rollback();
                 throw new ResourcePersistenceException("Failed to persist user to database.");
@@ -88,15 +89,22 @@ public class UserDAO implements CrudDAO<User> {
     }
 
     @Override
-    public void update(String id, User updatedUser) {
+    public void update(Update update) {
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-
             conn.setAutoCommit(false);
-            PreparedStatement pstmt = conn.prepareStatement(
-                ""
-            );
 
+            PreparedStatement pstmt = conn.prepareStatement(this.createUpdateQuery(update));
+
+            int rowsUpdated = pstmt.executeUpdate();
+            System.out.println("rowsUpdated: " + rowsUpdated);
+
+            if (rowsUpdated != 1) {
+                conn.rollback();
+                throw new ResourcePersistenceException("Failed to persist user to database.");
+            }
+
+            conn.commit();
         } catch (SQLException e) {
             throw new DataSourceException(e);
         }

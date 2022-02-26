@@ -1,5 +1,7 @@
 package com.revature.ers.daos;
 
+import com.revature.ers.models.Update;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,28 +16,28 @@ public interface CrudDAO<T> {
     List<T> getAll();
 
     // PUT
-    void update(String id, T updatedEntity);
+    void update(Update update);
 
     // DELETE
     void deleteById(String id);
 
-    default String createUpdateQuery (
-            String tableName,
-            String idType,
-            String id,
-            List<String> columnNames
-    ) {
-        System.out.println("columnNames: " + columnNames.toString());
+    default String createUpdateQuery(Update update) {
+        StringBuilder setUpdates = new StringBuilder();
 
-        StringBuilder columnUpdates = new StringBuilder();
+        for (int i = 0; i < update.getColumnNames().size(); i++) {
+            String s =
+                update.getColumnNames().get(i) + "='" +
+                update.getColumnUpdates().get(i) + "'";
+            setUpdates.append(s);
 
-        for (String s : columnNames) {
-            s = s + "=?, ";
-            columnUpdates.append(s);
+            if (i < (update.getColumnNames().size() - 1))
+                setUpdates.append(", ");
+            else
+                setUpdates.append(" ");
         }
 
-        return "UPDATE " + tableName + " " +
-               "SET " + columnUpdates +
-               "WHERE " + idType + "=" + id;
+        return "UPDATE " + update.getTableName() + " " +
+               "SET " + setUpdates +
+               "WHERE " + update.getIdType() + "= '" + update.getId() + "'";
     }
 }
