@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface CrudDAO<T> {
     // POST
-    void save(T newModel);
+    void save(T newEntity);
 
     // GET (1)
     T getById(String id);
@@ -14,7 +14,7 @@ public interface CrudDAO<T> {
     List<T> getAll();
 
     // PUT
-    void update(T updateModel);
+    void update(String id, T updatedEntity);
 
     // DELETE
     void deleteById(String id);

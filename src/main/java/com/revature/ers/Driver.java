@@ -1,15 +1,24 @@
 package com.revature.ers;
 
 import com.revature.ers.daos.UserDAO;
-import com.revature.ers.util.ConnectionFactory;
-
-import java.sql.Connection;
-import java.sql.SQLException;
+import com.revature.ers.models.User;
 
 public class Driver {
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
         UserDAO userDAO = new UserDAO();
 
-        System.out.println(userDAO.getAll().toString());
+        User testUser = new User(
+            "1",
+            "aidanamato",
+            "aidan@mail.com",
+            "PASSWORD",
+            "Aidan",
+            "Amato",
+            "1"
+        );
+
+        // userDAO.save(testUser);
+
+        System.out.println(userDAO.getById("1").toString());
     }
 }

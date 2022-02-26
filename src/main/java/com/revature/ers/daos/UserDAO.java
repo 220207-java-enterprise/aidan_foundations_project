@@ -3,8 +3,10 @@ package com.revature.ers.daos;
 import com.revature.ers.models.User;
 import com.revature.ers.util.ConnectionFactory;
 import com.revature.ers.util.exceptions.DataSourceException;
+import com.revature.ers.util.exceptions.ResourcePersistenceException;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,13 +14,57 @@ import java.util.List;
 
 public class UserDAO implements CrudDAO<User> {
 
-    @Override
-    public void save(User newModel) {
+    private final String rootSelect = "SELECT * FROM ers_users";
 
+    @Override
+    public void save(User newUser) {
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+            conn.setAutoCommit(false);
+
+            PreparedStatement pstmt = conn.prepareStatement(
+                "INSERT INTO ers_users" +
+                        "(user_id, username, email, password, given_name, surname, role_id)" +
+                    "VALUES" +
+                        "(?, ?, ?, ?, ?, ?, ?)"
+            );
+
+            pstmt.setString(1, newUser.getUserId());
+            pstmt.setString(2, newUser.getUsername());
+            pstmt.setString(3, newUser.getEmail());
+            pstmt.setString(4, newUser.getPassword());
+            pstmt.setString(5, newUser.getGivenName());
+            pstmt.setString(6, newUser.getSurname());
+            pstmt.setString(7, newUser.getRoleId());
+
+            int rowsInserted = pstmt.executeUpdate();
+            System.out.println(rowsInserted);
+            if (rowsInserted != 1) {
+                conn.rollback();
+                throw new ResourcePersistenceException("Failed to persist user to database.");
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            throw new DataSourceException(e);
+        }
     }
 
     @Override
     public User getById(String id) {
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            ResultSet rs = conn.prepareStatement(rootSelect).executeQuery();
+            if (rs.next()) {
+                return createUser(rs);
+            }
+
+        } catch (SQLException e) {
+            throw new DataSourceException(e);
+        }
+
         return null;
     }
 
@@ -29,17 +75,9 @@ public class UserDAO implements CrudDAO<User> {
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
-            ResultSet rs = conn.prepareStatement("SELECT * FROM ers_users").executeQuery();
+            ResultSet rs = conn.prepareStatement(rootSelect).executeQuery();
             while (rs.next()) {
-                User user = new User();
-                user.setUserId(rs.getString("user_id"));
-                user.setUsername(rs.getString("username"));
-                user.setEmail(rs.getString("email"));
-                user.setPassword(rs.getString("password"));
-                user.setGivenName(rs.getString("given_name"));
-                user.setSurname(rs.getString("surname"));
-                user.setIsActive(rs.getBoolean("is_active"));
-                user.setRoleId(rs.getString("role_id"));
+                User user = createUser(rs);
                 users.add(user);
             }
 
@@ -50,12 +88,27 @@ public class UserDAO implements CrudDAO<User> {
     }
 
     @Override
-    public void update(User updateModel) {
+    public void update(String id, User updatedUser) {
 
     }
 
     @Override
     public void deleteById(String id) {
 
+    }
+
+    private User createUser(ResultSet rs) throws SQLException {
+        User user = new User();
+
+        user.setUserId(rs.getString("user_id"));
+        user.setUsername(rs.getString("username"));
+        user.setEmail(rs.getString("email"));
+        user.setPassword(rs.getString("password"));
+        user.setGivenName(rs.getString("given_name"));
+        user.setSurname(rs.getString("surname"));
+        user.setIsActive(rs.getBoolean("is_active"));
+        user.setRoleId(rs.getString("role_id"));
+
+        return user;
     }
 }
