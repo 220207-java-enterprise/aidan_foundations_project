@@ -10,6 +10,11 @@ public class User {
     private Boolean isActive;
     private String roleId;
 
+    public User() {
+        // this is for you Wezley
+        super();
+    }
+
     public User(
         String userId,
         String username,
@@ -76,8 +81,8 @@ public class User {
     public Boolean getIsActive() {
         return this.isActive;
     }
-    public void toggleIsActive() {
-        this.isActive = !this.isActive;
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
     }
 
     public String getRoleId() {
@@ -85,5 +90,19 @@ public class User {
     }
     public void setRoleId(String roleId) {
         this.roleId = roleId;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId='" + userId + '\'' +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", givenName='" + givenName + '\'' +
+                ", surname='" + surname + '\'' +
+                ", isActive=" + isActive +
+                ", roleId='" + roleId + '\'' +
+                '}';
     }
 }

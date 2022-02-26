@@ -1,6 +1,7 @@
 package com.revature.ers.daos;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface CrudDAO<T> {
     // POST
@@ -10,7 +11,7 @@ public interface CrudDAO<T> {
     T getById(String id);
 
     // GET (All)
-    ArrayList<T> getAll();
+    List<T> getAll();
 
     // PUT
     void update(T updateModel);

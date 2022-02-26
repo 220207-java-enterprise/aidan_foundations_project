@@ -26,7 +26,7 @@ create table ers_users(
 	password	varchar not null,
 	given_name	varchar not null,
 	surname		varchar not null,
-	is_active	boolean,
+	is_active	bool default true,
 	role_id		varchar unique not null,
 	
 	constraint role_id_fk
