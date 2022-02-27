@@ -42,4 +42,4 @@ data/
 application.properties
 
 #miscellaneous dev resources
-src/main/resources/misc
+src/main/resources/misc/
