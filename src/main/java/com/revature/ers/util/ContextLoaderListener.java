@@ -1,6 +1,9 @@
 package com.revature.ers.util;
 
-import com.revature.ers.servlets.TestServlet;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.ers.daos.UserDAO;
+import com.revature.ers.services.UserService;
+import com.revature.ers.servlets.UserServlet;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -11,10 +14,14 @@ public class ContextLoaderListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         System.out.println("Initializing Expense Reimbursement System");
 
-        TestServlet testServlet = new TestServlet();
+        ObjectMapper mapper = new ObjectMapper();
+
+        UserService userService = new UserService(new UserDAO());
+
+        UserServlet userServlet = new UserServlet(userService, mapper);
 
         ServletContext context = sce.getServletContext();
-        context.addServlet("TestServlet" ,testServlet).addMapping("/test");
+        context.addServlet("UserServlet" , userServlet).addMapping("/users/*");
     }
 
     @Override

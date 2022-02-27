@@ -27,7 +27,7 @@ create table ers_users(
 	given_name	varchar not null,
 	surname		varchar not null,
 	is_active	bool default true,
-	role_id		varchar unique not null,
+	role_id		varchar not null,
 	
 	constraint role_id_fk
 	foreign key (role_id)

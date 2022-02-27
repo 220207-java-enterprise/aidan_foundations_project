@@ -7,6 +7,11 @@ insert into ers_user_roles values
 insert into ers_users 
 	(user_id, username, email, password, given_name, surname, role_id) 
 values
-	(1, 'aidanamato', 'aidan@mail.com', 'password', 'Aidan', 'Amato', 1);
+	(1, 'aidanamato', 'aidan@mail.com', 'password', 'Aidan', 'Amato', 1),
+	(2, 'johndoe', 'john@mail.com', 'password', 'Aidan', 'Amato', 1);
 	
 select * from ers_users;
+
+update ers_users
+set given_name ='Billy', surname ='Bob'
+where user_id='1';

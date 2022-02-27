@@ -72,7 +72,7 @@ public class UserDAO implements CrudDAO<User> {
     @Override
     public List<User> getAll() {
 
-        List<User> users = new ArrayList<User>();
+        List<User> users = new ArrayList<>();
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
