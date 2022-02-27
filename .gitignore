@@ -40,3 +40,6 @@ data/
 
 #properties
 application.properties
+
+#miscellaneous dev resources
+src/main/resources/misc
