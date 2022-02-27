@@ -113,6 +113,28 @@ public class UserDAO implements CrudDAO<User> {
     @Override
     public void deleteById(String id) {
 
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+            conn.setAutoCommit(false);
+
+            PreparedStatement pstmt = conn.prepareStatement(
+                "DELETE FROM ers_users " +
+                    "WHERE user_id=?"
+            );
+            pstmt.setString(1, id);
+
+            System.out.println(pstmt);
+
+            int rowsInserted = pstmt.executeUpdate();
+            if (rowsInserted != 1) {
+                conn.rollback();
+                throw new ResourcePersistenceException("Failed to delete user from database");
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            throw new DataSourceException(e);
+        }
     }
 
     private User createUser(ResultSet rs) throws SQLException {

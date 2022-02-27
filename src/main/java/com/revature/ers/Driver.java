@@ -37,6 +37,6 @@ public class Driver {
             columnUpdates
         );
 
-        userDAO.update(update);
+        userDAO.deleteById("1");
     }
 }
