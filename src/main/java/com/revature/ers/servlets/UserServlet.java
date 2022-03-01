@@ -1,9 +1,9 @@
 package com.revature.ers.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.ers.daos.UserDAO;
+import com.revature.ers.dtos.requests.LoginRequest;
+import com.revature.ers.dtos.responses.Principal;
 import com.revature.ers.dtos.responses.UserResponse;
-import com.revature.ers.models.User;
 import com.revature.ers.services.UserService;
 
 import javax.servlet.ServletException;
@@ -24,9 +24,40 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<UserResponse> users = userService.getAllUsers();
-        String payload = mapper.writeValueAsString(users);
         resp.setContentType("application/json");
-        resp.getWriter().write(payload);
+
+        List<UserResponse> users = userService.getAllUsers();
+        resp.getWriter().write(mapper.writeValueAsString(users));
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json");
+
+        String[] reqFrags = req.getRequestURI().split("/");
+
+        // /users/login
+        /*
+            {
+                "username": "username",
+                "password": "password"
+            }
+         */
+        if (reqFrags.length == 4 && reqFrags[3].equals("login")) {
+            LoginRequest loginRequest = mapper.readValue(req.getInputStream(), LoginRequest.class);
+
+            // TODO create JWT and set it to Authorization header
+
+            resp.getWriter().write(
+                mapper.writeValueAsString(
+                    new Principal(
+                        userService.login(loginRequest)
+                    )
+                )
+            );
+            return;
+        }
+
+        resp.setStatus(500);
     }
 }

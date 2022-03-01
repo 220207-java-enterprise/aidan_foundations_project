@@ -32,8 +32,8 @@ public class User {
         this.surname = surname;
         this.roleId = roleId;
 
-        // user will automatically be instantiated as active
-        this.isActive = true;
+        // user will automatically be instantiated as inactive as they wait for admin approval
+        this.isActive = false;
     }
 
     public User(
