@@ -1,6 +1,5 @@
 package com.revature.ers.util;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.SQLException;

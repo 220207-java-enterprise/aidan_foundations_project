@@ -36,7 +36,7 @@ public class UserServlet extends HttpServlet {
 
         String[] reqFrags = req.getRequestURI().split("/");
 
-        // /users/login
+        // /users/login - Login an existing user
         /*
             {
                 "username": "username",
@@ -57,6 +57,15 @@ public class UserServlet extends HttpServlet {
             );
             return;
         }
+
+        // /users - Post a new user
+        // admin only
+        /*
+            {
+                "username": "username",
+                "password": "password"
+            }
+         */
 
         resp.setStatus(500);
     }

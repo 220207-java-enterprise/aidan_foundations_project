@@ -1,20 +1,16 @@
 package com.revature.ers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.ers.daos.UserDAO;
-import com.revature.ers.dtos.requests.LoginRequest;
-import com.revature.ers.dtos.responses.Principal;
-import com.revature.ers.services.UserService;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class Driver {
     public static void main(String[] args) {
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setUsername("aidanamato");
-        loginRequest.setPassword("password");
+        String hashedPW1 = BCrypt.hashpw(",J]{V;^-JKY3cxJ[", BCrypt.gensalt(10));
+        String hashedPW2 = BCrypt.hashpw(",J]{V;^-JKY3cxJ[", BCrypt.gensalt(10));
 
-        System.out.println(new Principal(
-            new UserService(new UserDAO()).login(loginRequest)
-        ));
+        System.out.println("hashedPW1: " + hashedPW1);
+        System.out.println("hashedPW2: " + hashedPW2);
+
+        System.out.println("hashedPW1 check: " + BCrypt.checkpw(",J]{V;^-JKY3cxJ[", hashedPW1));
+        System.out.println("hashedPW2 check: " + BCrypt.checkpw(",J]{V;^-JKY3cxJ[", hashedPW2));
     }
 }

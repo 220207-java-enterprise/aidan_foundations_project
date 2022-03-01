@@ -5,7 +5,15 @@ import com.revature.ers.dtos.requests.LoginRequest;
 import com.revature.ers.dtos.responses.UserResponse;
 import com.revature.ers.models.User;
 import com.revature.ers.util.exceptions.AuthenticationException;
+import org.mindrot.jbcrypt.BCrypt;
 
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +37,7 @@ public class UserService {
 
         // TODO validate credentials here
 
-        // TODO encrypt password (password in DB will be encrypted)
+        password = BCrypt.hashpw(password, BCrypt.gensalt(10));
 
         User authUser = userDAO.getByUsernameAndPassword(username, password);
 
