@@ -6,6 +6,7 @@ public class Principal {
     private String userId;
     private String username;
     private String roleId;
+
     public Principal(User user) {
         this.userId = user.getUserId();
         this.username = user.getUsername();
