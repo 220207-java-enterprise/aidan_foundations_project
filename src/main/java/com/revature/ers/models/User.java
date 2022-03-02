@@ -1,5 +1,7 @@
 package com.revature.ers.models;
 
+import java.util.UUID;
+
 public class User {
     private String userId;
     private String username;
@@ -16,7 +18,6 @@ public class User {
     }
 
     public User(
-        String userId,
         String username,
         String email,
         String password,
@@ -24,7 +25,6 @@ public class User {
         String surname,
         String roleId
     ) {
-        this.userId = userId;
         this.username = username;
         this.email = email;
         this.password = password;
@@ -32,7 +32,9 @@ public class User {
         this.surname = surname;
         this.roleId = roleId;
 
-        // user will automatically be instantiated as inactive as they wait for admin approval
+        // user will automatically be instantiated with random id
+        this.userId = UUID.randomUUID().toString();
+        // and as inactive as they wait for admin approval
         this.isActive = false;
     }
 

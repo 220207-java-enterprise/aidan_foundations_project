@@ -9,7 +9,6 @@ public class Driver {
     public static void main(String[] args) {
        Principal principal = new Principal(
            new User(
-               "12345",
                "aidanamato",
                "password",
                "aidan@mail.com",

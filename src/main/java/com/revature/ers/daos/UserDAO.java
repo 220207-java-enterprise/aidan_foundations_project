@@ -85,6 +85,8 @@ public class UserDAO implements CrudDAO<User> {
             pstmt.setString(1, username);
             pstmt.setString(2, password);
 
+            System.out.println("pstmt: " + pstmt);
+
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return createUser(rs);
@@ -125,7 +127,6 @@ public class UserDAO implements CrudDAO<User> {
             PreparedStatement pstmt = conn.prepareStatement(this.createUpdateQuery(update));
 
             int rowsUpdated = pstmt.executeUpdate();
-            System.out.println("rowsUpdated: " + rowsUpdated);
 
             if (rowsUpdated != 1) {
                 conn.rollback();

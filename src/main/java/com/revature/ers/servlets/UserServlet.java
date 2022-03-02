@@ -2,8 +2,11 @@ package com.revature.ers.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.ers.dtos.requests.LoginRequest;
+import com.revature.ers.dtos.requests.NewUserRequest;
 import com.revature.ers.dtos.responses.Principal;
 import com.revature.ers.dtos.responses.UserResponse;
+import com.revature.ers.models.User;
+import com.revature.ers.services.TokenService;
 import com.revature.ers.services.UserService;
 
 import javax.servlet.ServletException;
@@ -15,10 +18,12 @@ import java.util.List;
 
 public class UserServlet extends HttpServlet {
     private final UserService userService;
+    private final TokenService tokenService;
     private final ObjectMapper mapper;
 
-    public UserServlet(UserService userService, ObjectMapper mapper) {
+    public UserServlet(UserService userService, TokenService tokenService, ObjectMapper mapper) {
         this.userService = userService;
+        this.tokenService = tokenService;
         this.mapper = mapper;
     }
 
@@ -34,8 +39,6 @@ public class UserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
 
-        String[] reqFrags = req.getRequestURI().split("/");
-
         // /users/login - Login an existing user
         /*
             {
@@ -43,30 +46,41 @@ public class UserServlet extends HttpServlet {
                 "password": "password"
             }
          */
+        String[] reqFrags = req.getRequestURI().split("/");
         if (reqFrags.length == 4 && reqFrags[3].equals("login")) {
-            LoginRequest loginRequest = mapper.readValue(req.getInputStream(), LoginRequest.class);
-
-            // TODO create JWT and set it to Authorization header
-
-            resp.getWriter().write(
-                mapper.writeValueAsString(
-                    new Principal(
-                        userService.login(loginRequest)
-                    )
+            Principal principal = new Principal(
+                userService.login(
+                    mapper.readValue(req.getInputStream(), LoginRequest.class)
                 )
             );
+            String jwt = tokenService.generateToken(principal);
+
+            resp.setHeader("Authorization", jwt);
+            resp.getWriter().write(mapper.writeValueAsString(principal));
             return;
         }
 
         // /users - Post a new user
-        // admin only
         /*
             {
                 "username": "username",
-                "password": "password"
+                "email": "email",
+                "password": "password",
+                "givenName": "givenName",
+                "surname": "surname",
+                "roleId": "roleId:
             }
          */
+        User newUser = userService.register(
+            mapper.readValue(req.getInputStream(), NewUserRequest.class)
+        );
+        resp.setStatus(201);
+        resp.getWriter().write(
+            mapper.writeValueAsString(
+                new UserResponse(newUser)
+            )
+        );
 
-        resp.setStatus(500);
+        // TODO convert to TRY/CATCH block to catch validation related exceptions
     }
 }

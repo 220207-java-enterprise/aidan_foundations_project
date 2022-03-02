@@ -2,6 +2,7 @@ package com.revature.ers.services;
 
 import com.revature.ers.daos.UserDAO;
 import com.revature.ers.dtos.requests.LoginRequest;
+import com.revature.ers.dtos.requests.NewUserRequest;
 import com.revature.ers.dtos.responses.UserResponse;
 import com.revature.ers.models.User;
 import com.revature.ers.util.exceptions.AuthenticationException;
@@ -22,6 +23,21 @@ public class UserService {
 
     public UserService(UserDAO userDAO) {
         this.userDAO = userDAO;
+    }
+
+    public User register(NewUserRequest request) {
+        User newUser = request.extractUser();
+
+        // TODO Validate request details
+
+        // TODO check availability of username and email
+
+        newUser.setPassword(
+            BCrypt.hashpw(newUser.getPassword(), BCrypt.gensalt(10))
+        );
+
+        userDAO.save(newUser);
+        return newUser;
     }
 
     public List<UserResponse> getAllUsers() {
