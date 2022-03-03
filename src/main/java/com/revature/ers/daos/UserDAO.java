@@ -118,6 +118,26 @@ public class UserDAO implements CrudDAO<User> {
         return null;
     }
 
+    public List<User> getPending() {
+        List<User> users = new ArrayList<>();
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            ResultSet rs = conn.prepareStatement(
+                    rootSelect +
+                            " WHERE is_approved=false"
+            ).executeQuery();
+            while (rs.next()) {
+                User user = createUser(rs);
+                users.add(user);
+            }
+
+        } catch (SQLException e) {
+            throw new DataSourceException(e);
+        }
+        return users;
+    }
+
     @Override
     public List<User> getAll() {
 

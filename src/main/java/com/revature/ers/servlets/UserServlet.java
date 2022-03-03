@@ -42,6 +42,15 @@ public class UserServlet extends HttpServlet {
             return;
         }
 
+        // /users/pending
+        String[] reqFrags = req.getRequestURI().split("/");
+        if (reqFrags.length == 4 && reqFrags[3].equals("pending")) {
+            List<UserResponse> users = userService.getPendingUsers();
+            resp.getWriter().write(mapper.writeValueAsString(users));
+            return;
+        }
+
+        // /users
         List<UserResponse> users = userService.getAllUsers();
         resp.getWriter().write(mapper.writeValueAsString(users));
     }
@@ -102,5 +111,17 @@ public class UserServlet extends HttpServlet {
                 new UserResponse(newUser)
             )
         );
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json");
+
+        // /users/approve
+        /*
+            {
+               "user_id": "user_id:
+            }
+        */
     }
 }

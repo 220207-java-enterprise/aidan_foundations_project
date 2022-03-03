@@ -49,13 +49,6 @@ public class UserService {
         return newUser;
     }
 
-    public List<UserResponse> getAllUsers() {
-        return userDAO.getAll()
-                      .stream()
-                      .map(UserResponse::new)
-                      .collect(Collectors.toList());
-    }
-
     public User login(LoginRequest loginRequest) {
         String username = loginRequest.getUsername();
         String password = loginRequest.getPassword();
@@ -70,6 +63,20 @@ public class UserService {
         }
 
         return authUser;
+    }
+
+    public List<UserResponse> getAllUsers() {
+        return userDAO.getAll()
+                      .stream()
+                      .map(UserResponse::new)
+                      .collect(Collectors.toList());
+    }
+
+    public List<UserResponse> getPendingUsers() {
+        return userDAO.getPending()
+                      .stream()
+                      .map(UserResponse::new)
+                      .collect(Collectors.toList());
     }
 
     private boolean isUserValid(User user) {
