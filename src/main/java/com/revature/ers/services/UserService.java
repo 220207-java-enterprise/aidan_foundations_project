@@ -3,7 +3,9 @@ package com.revature.ers.services;
 import com.revature.ers.daos.UserDAO;
 import com.revature.ers.dtos.requests.LoginRequest;
 import com.revature.ers.dtos.requests.NewUserRequest;
+import com.revature.ers.dtos.requests.UpdateUserRequest;
 import com.revature.ers.dtos.responses.UserResponse;
+import com.revature.ers.models.Update;
 import com.revature.ers.models.User;
 import com.revature.ers.util.exceptions.AuthenticationException;
 import com.revature.ers.util.exceptions.InvalidRequestException;
@@ -47,6 +49,10 @@ public class UserService {
 
         userDAO.save(newUser);
         return newUser;
+    }
+
+    public void approve(UpdateUserRequest update) {
+        userDAO.approve(update);
     }
 
     public User login(LoginRequest loginRequest) {

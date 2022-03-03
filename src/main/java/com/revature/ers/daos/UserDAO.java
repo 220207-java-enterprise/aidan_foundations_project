@@ -1,9 +1,11 @@
 package com.revature.ers.daos;
 
+import com.revature.ers.dtos.requests.UpdateUserRequest;
 import com.revature.ers.models.Update;
 import com.revature.ers.models.User;
 import com.revature.ers.util.ConnectionFactory;
 import com.revature.ers.util.exceptions.DataSourceException;
+import com.revature.ers.util.exceptions.ResourceNotFoundException;
 import com.revature.ers.util.exceptions.ResourcePersistenceException;
 
 import java.sql.Connection;
@@ -44,6 +46,36 @@ public class UserDAO implements CrudDAO<User> {
             if (rowsInserted != 1) {
                 conn.rollback();
                 throw new ResourcePersistenceException("Failed to persist user to database.");
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            throw new DataSourceException(e);
+        }
+    }
+
+    public void approve(UpdateUserRequest request) {
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+            conn.setAutoCommit(false);
+
+            PreparedStatement pstmt = conn.prepareStatement(
+                "UPDATE ers_users " +
+                    "SET is_approved=true, is_active=true " +
+                    "WHERE user_id=? AND is_approved=false"
+            );
+            pstmt.setString(1, request.getUserId());
+
+            int rowsUpdated = pstmt.executeUpdate();
+
+            if (rowsUpdated != 1) {
+                conn.rollback();
+
+                if (rowsUpdated == 0)
+                    throw new ResourceNotFoundException("No user found with provided id.");
+
+                throw new ResourcePersistenceException("Failed to approve user");
             }
 
             conn.commit();

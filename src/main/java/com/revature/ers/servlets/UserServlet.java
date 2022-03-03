@@ -3,6 +3,7 @@ package com.revature.ers.servlets;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.ers.dtos.requests.LoginRequest;
 import com.revature.ers.dtos.requests.NewUserRequest;
+import com.revature.ers.dtos.requests.UpdateUserRequest;
 import com.revature.ers.dtos.responses.Principal;
 import com.revature.ers.dtos.responses.UserResponse;
 import com.revature.ers.models.User;
@@ -105,7 +106,12 @@ public class UserServlet extends HttpServlet {
             newUserRequest.setRequesterIsAdmin(true);
 
         User newUser = userService.register(newUserRequest);
-        resp.setStatus(201);
+
+        if (newUserRequest.getRequesterIsAdmin())
+            resp.setStatus(201);
+        else
+            resp.setStatus(202);
+
         resp.getWriter().write(
             mapper.writeValueAsString(
                 new UserResponse(newUser)
@@ -117,11 +123,32 @@ public class UserServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
 
+        String[] reqFrags = req.getRequestURI().split("/");
         // /users/approve
         /*
             {
                "user_id": "user_id:
             }
         */
+        if (reqFrags.length == 4 && reqFrags[3].equals("approve")) {
+            String jwt = req.getHeader("Authentication");
+            Principal principal = null;
+
+            if (jwt != null)
+                principal = tokenService.extractRequesterDetails(jwt);
+
+            if (!(principal != null && principal.getRoleId().equals("5b21bdca-37f4-468c-9ad2-21b1608f9a6d"))) {
+                resp.setStatus(403);
+                return;
+            }
+
+            UpdateUserRequest approveUserRequest = mapper.readValue(
+                req.getInputStream(), UpdateUserRequest.class
+            );
+
+            userService.approve(approveUserRequest);
+            resp.setStatus(201);
+        }
+
     }
 }
