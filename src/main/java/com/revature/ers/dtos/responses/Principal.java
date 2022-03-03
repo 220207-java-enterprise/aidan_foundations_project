@@ -54,6 +54,7 @@ public class Principal {
                 "userId='" + userId + '\'' +
                 ", username='" + username + '\'' +
                 ", roleId='" + roleId + '\'' +
+                ", role='" + role + '\'' +
                 '}';
     }
 }

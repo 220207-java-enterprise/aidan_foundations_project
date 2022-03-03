@@ -1,6 +1,6 @@
 package com.revature.ers.models;
 
-import com.revature.ers.util.exceptions.RoleIdException;
+import com.revature.ers.util.exceptions.InvalidRequestException;
 
 import java.util.UUID;
 
@@ -147,7 +147,7 @@ public class User {
                     this.role = "admin";
                     break;
                 default:
-                    throw new RoleIdException(roleId);
+                    throw new InvalidRequestException("RoleID \"" + roleId + "\" is not a valid id.");
             }
         }
     }
