@@ -107,16 +107,17 @@ public class UserServlet extends HttpServlet {
 
         User newUser = userService.register(newUserRequest);
 
-        if (newUserRequest.getRequesterIsAdmin())
+        if (newUserRequest.getRequesterIsAdmin()) {
             resp.setStatus(201);
+
+            resp.getWriter().write(
+                mapper.writeValueAsString(
+                    new UserResponse(newUser)
+                )
+            );
+        }
         else
             resp.setStatus(202);
-
-        resp.getWriter().write(
-            mapper.writeValueAsString(
-                new UserResponse(newUser)
-            )
-        );
     }
 
     @Override
