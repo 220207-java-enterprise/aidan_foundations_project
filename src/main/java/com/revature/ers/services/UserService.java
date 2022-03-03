@@ -7,15 +7,9 @@ import com.revature.ers.dtos.responses.UserResponse;
 import com.revature.ers.models.User;
 import com.revature.ers.util.exceptions.AuthenticationException;
 import com.revature.ers.util.exceptions.InvalidRequestException;
+import com.revature.ers.util.exceptions.ResourceConflictException;
 import org.mindrot.jbcrypt.BCrypt;
 
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,9 +23,18 @@ public class UserService {
     public User register(NewUserRequest request) {
         User newUser = request.extractUser();
 
-        // TODO Validate request details
+        if (!isUserValid(newUser))
+            throw new InvalidRequestException();
 
-        // TODO check availability of username and email
+        User usernameMatch = userDAO.getByUsername(newUser.getUsername());
+        User emailMatch = userDAO.getByEmail(newUser.getEmail());
+
+        if (usernameMatch != null || emailMatch != null) {
+            String msg = "The values provided for the following fields are already taken by other users: ";
+            if (usernameMatch != null) msg += "username ";
+            if (emailMatch != null) msg += "email";
+            throw new ResourceConflictException(msg);
+        }
 
         newUser.setPassword(
             BCrypt.hashpw(newUser.getPassword(), BCrypt.gensalt(10))

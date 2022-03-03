@@ -96,6 +96,27 @@ public class UserDAO implements CrudDAO<User> {
         return null;
     }
 
+    public User getByEmail(String email) {
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            PreparedStatement pstmt = conn.prepareStatement(
+                    rootSelect + " WHERE email=?"
+            );
+            pstmt.setString(1, email);
+
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return createUser(rs);
+            }
+
+        } catch (SQLException e) {
+            throw new DataSourceException(e);
+        }
+
+        return null;
+    }
+
     @Override
     public List<User> getAll() {
 
