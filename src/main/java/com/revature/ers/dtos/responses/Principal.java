@@ -6,6 +6,7 @@ public class Principal {
     private String userId;
     private String username;
     private String roleId;
+    private String role;
 
     public Principal() {
         // This is for you Wezley
@@ -16,6 +17,7 @@ public class Principal {
         this.userId = user.getUserId();
         this.username = user.getUsername();
         this.roleId = user.getRoleId();
+        this.role = user.getRole();
     }
 
     public String getUserId() {
@@ -37,6 +39,13 @@ public class Principal {
     }
     public void setRoleId(String roleId) {
         this.roleId = roleId;
+    }
+
+    public String getRole() {
+        return role;
+    }
+    public void setRole(String role) {
+        this.role = role;
     }
 
     @Override

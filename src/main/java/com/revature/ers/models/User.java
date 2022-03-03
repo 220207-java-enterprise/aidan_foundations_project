@@ -1,5 +1,7 @@
 package com.revature.ers.models;
 
+import com.revature.ers.util.exceptions.RoleIdException;
+
 import java.util.UUID;
 
 public class User {
@@ -10,7 +12,7 @@ public class User {
     private String givenName;
     private String surname;
     private Boolean isActive;
-    private String roleId;
+    private UserRole userRole;
 
     public User() {
         // this is for you Wezley
@@ -30,7 +32,7 @@ public class User {
         this.password = password;
         this.givenName = givenName;
         this.surname = surname;
-        this.roleId = roleId;
+        this.userRole = new UserRole(roleId);
 
         // user will automatically be instantiated with random id
         this.userId = UUID.randomUUID().toString();
@@ -55,7 +57,7 @@ public class User {
         this.givenName = givenName;
         this.surname = surname;
         this.isActive = isActive;
-        this.roleId = roleId;
+        this.userRole = new UserRole(roleId);
     }
 
     public String getUserId() {
@@ -108,23 +110,45 @@ public class User {
     }
 
     public String getRoleId() {
-        return this.roleId;
+        return this.userRole.roleId;
     }
     public void setRoleId(String roleId) {
-        this.roleId = roleId;
+        this.userRole.roleId = roleId;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId='" + userId + '\'' +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", givenName='" + givenName + '\'' +
-                ", surname='" + surname + '\'' +
-                ", isActive=" + isActive +
-                ", roleId='" + roleId + '\'' +
-                '}';
+    public String getRole() {
+        return this.userRole.role;
+    }
+    public void setRole(String role) {
+        this.userRole.role = role;
+    }
+
+    public void setUserRoleObj(String roleId) {
+        this.userRole = new UserRole(roleId);
+    }
+
+    private static class UserRole {
+        private String roleId;
+        private String role;
+
+        public UserRole(
+                String roleId
+        ) {
+            this.roleId = roleId;
+
+            switch (roleId) {
+                case "1714d958-bffd-4fa8-965c-c96c130bba2f":
+                    this.role = "employee";
+                    break;
+                case "df59b48c-0928-46eb-92b3-e07f27dadc3c":
+                    this.role = "finance_manager";
+                    break;
+                case "5b21bdca-37f4-468c-9ad2-21b1608f9a6d":
+                    this.role = "admin";
+                    break;
+                default:
+                    throw new RoleIdException(roleId);
+            }
+        }
     }
 }

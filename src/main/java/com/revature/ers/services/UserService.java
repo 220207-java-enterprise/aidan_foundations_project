@@ -53,11 +53,9 @@ public class UserService {
 
         // TODO validate credentials here
 
-        password = BCrypt.hashpw(password, BCrypt.gensalt(10));
+        User authUser = userDAO.getByUsername(username);
 
-        User authUser = userDAO.getByUsernameAndPassword(username, password);
-
-        if (authUser == null) {
+        if (authUser == null || !BCrypt.checkpw(password, authUser.getPassword())) {
             throw new AuthenticationException();
         }
 

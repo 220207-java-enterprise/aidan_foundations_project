@@ -75,17 +75,14 @@ public class UserDAO implements CrudDAO<User> {
         return null;
     }
 
-    public User getByUsernameAndPassword(String username, String password) {
+    public User getByUsername(String username) {
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
             PreparedStatement pstmt = conn.prepareStatement(
-                rootSelect + " WHERE username=? AND password=?"
+                rootSelect + " WHERE username=?"
             );
             pstmt.setString(1, username);
-            pstmt.setString(2, password);
-
-            System.out.println("pstmt: " + pstmt);
 
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -176,7 +173,7 @@ public class UserDAO implements CrudDAO<User> {
         user.setGivenName(rs.getString("given_name"));
         user.setSurname(rs.getString("surname"));
         user.setIsActive(rs.getBoolean("is_active"));
-        user.setRoleId(rs.getString("role_id"));
+        user.setUserRoleObj(rs.getString("role_id"));
 
         return user;
     }

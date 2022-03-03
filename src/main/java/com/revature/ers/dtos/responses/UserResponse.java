@@ -9,7 +9,7 @@ public class UserResponse {
     private final String givenName;
     private final String surname;
     private final Boolean isActive;
-    private final String roleId;
+    private final String role;
 
     public UserResponse(User user) {
         userId = user.getUserId();
@@ -18,7 +18,7 @@ public class UserResponse {
         givenName = user.getGivenName();
         surname = user.getSurname();
         isActive = user.getIsActive();
-        roleId = user.getRoleId();
+        role = user.getRole();
     }
 
     public String getUserId() {
@@ -45,8 +45,8 @@ public class UserResponse {
         return isActive;
     }
 
-    public String getRoleId() {
-        return roleId;
+    public String getRole() {
+        return role;
     }
 
     @Override
@@ -58,7 +58,7 @@ public class UserResponse {
                 ", givenName='" + givenName + '\'' +
                 ", surname='" + surname + '\'' +
                 ", isActive=" + isActive +
-                ", roleId='" + roleId + '\'' +
+                ", role='" + role + '\'' +
                 '}';
     }
 }
