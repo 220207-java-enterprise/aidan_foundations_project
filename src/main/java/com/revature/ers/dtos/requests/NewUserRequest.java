@@ -9,6 +9,7 @@ public class NewUserRequest {
     private String givenName;
     private String surname;
     private String roleId;
+    private Boolean requesterIsAdmin = false;
 
     public String getUsername() {
         return username;
@@ -50,6 +51,13 @@ public class NewUserRequest {
     }
     public void setRoleId(String roleId) {
         this.roleId = roleId;
+    }
+
+    public Boolean getRequesterIsAdmin() {
+        return requesterIsAdmin;
+    }
+    public void setRequesterIsAdmin(Boolean requesterIsAdmin) {
+        this.requesterIsAdmin = requesterIsAdmin;
     }
 
     public User extractUser() {

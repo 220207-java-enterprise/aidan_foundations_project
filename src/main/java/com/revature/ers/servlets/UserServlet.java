@@ -31,6 +31,17 @@ public class UserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
 
+        String jwt = req.getHeader("Authentication");
+        Principal principal = null;
+
+        if (jwt != null)
+            principal = tokenService.extractRequesterDetails(jwt);
+
+        if (!(principal != null && principal.getRoleId().equals("5b21bdca-37f4-468c-9ad2-21b1608f9a6d"))) {
+            resp.setStatus(403);
+            return;
+        }
+
         List<UserResponse> users = userService.getAllUsers();
         resp.getWriter().write(mapper.writeValueAsString(users));
     }
@@ -56,7 +67,7 @@ public class UserServlet extends HttpServlet {
             String jwt = tokenService.generateToken(principal);
 
             resp.setHeader("Authorization", jwt);
-            resp.getWriter().write(mapper.writeValueAsString(principal));
+            resp.setStatus(204);
             return;
         }
 
@@ -68,19 +79,28 @@ public class UserServlet extends HttpServlet {
                 "password": "password",
                 "givenName": "givenName",
                 "surname": "surname",
-                "roleId": "roleId:
+                "roleId": "roleId" (optional)
             }
          */
-        User newUser = userService.register(
-            mapper.readValue(req.getInputStream(), NewUserRequest.class)
-        );
+        String jwt = req.getHeader("Authentication");
+
+        NewUserRequest newUserRequest =
+            mapper.readValue(req.getInputStream(), NewUserRequest.class);
+        Principal principal = null;
+
+        if (jwt != null)
+            principal = tokenService.extractRequesterDetails(jwt);
+
+        // if requester is an admin
+        if (principal != null && principal.getRoleId().equals("5b21bdca-37f4-468c-9ad2-21b1608f9a6d"))
+            newUserRequest.setRequesterIsAdmin(true);
+
+        User newUser = userService.register(newUserRequest);
         resp.setStatus(201);
         resp.getWriter().write(
             mapper.writeValueAsString(
                 new UserResponse(newUser)
             )
         );
-
-        // TODO convert to TRY/CATCH block to catch validation related exceptions
     }
 }

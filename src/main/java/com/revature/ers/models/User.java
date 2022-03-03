@@ -11,6 +11,7 @@ public class User {
     private String password;
     private String givenName;
     private String surname;
+    private Boolean isApproved;
     private Boolean isActive;
     private UserRole userRole;
 
@@ -37,27 +38,8 @@ public class User {
         // user will automatically be instantiated with random id
         this.userId = UUID.randomUUID().toString();
         // and as inactive as they wait for admin approval
+        this.isApproved = false;
         this.isActive = false;
-    }
-
-    public User(
-            String userId,
-            String username,
-            String email,
-            String password,
-            String givenName,
-            String surname,
-            Boolean isActive,
-            String roleId
-    ) {
-        this.userId = userId;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.givenName = givenName;
-        this.surname = surname;
-        this.isActive = isActive;
-        this.userRole = new UserRole(roleId);
     }
 
     public String getUserId() {
@@ -102,6 +84,13 @@ public class User {
         this.surname = surname;
     }
 
+    public Boolean getIsApproved() {
+        return isApproved;
+    }
+    public void setIsApproved(Boolean approved) {
+        isApproved = approved;
+    }
+
     public Boolean getIsActive() {
         return this.isActive;
     }
@@ -127,6 +116,21 @@ public class User {
         this.userRole = new UserRole(roleId);
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId='" + userId + '\'' +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", givenName='" + givenName + '\'' +
+                ", surname='" + surname + '\'' +
+                ", isApproved=" + isApproved +
+                ", isActive=" + isActive +
+                ", userRole=" + userRole +
+                '}';
+    }
+
     private static class UserRole {
         private String roleId;
         private String role;
@@ -149,6 +153,14 @@ public class User {
                 default:
                     throw new InvalidRequestException("RoleID \"" + roleId + "\" is not a valid id.");
             }
+        }
+
+        @Override
+        public String toString() {
+            return "UserRole{" +
+                    "roleId='" + roleId + '\'' +
+                    ", role='" + role + '\'' +
+                    '}';
         }
     }
 }

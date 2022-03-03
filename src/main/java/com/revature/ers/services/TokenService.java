@@ -9,7 +9,7 @@ import io.jsonwebtoken.Jwts;
 import java.util.Date;
 
 public class TokenService {
-    private JwtConfig jwtConfig;
+    private final JwtConfig jwtConfig;
 
     public TokenService(JwtConfig jwtConfig) {
         this.jwtConfig = jwtConfig;

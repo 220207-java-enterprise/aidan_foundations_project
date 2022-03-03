@@ -36,6 +36,11 @@ public class UserService {
             throw new ResourceConflictException(msg);
         }
 
+        if (request.getRequesterIsAdmin()) {
+            newUser.setIsApproved(true);
+            newUser.setIsActive(true);
+        }
+
         newUser.setPassword(
             BCrypt.hashpw(newUser.getPassword(), BCrypt.gensalt(10))
         );
@@ -60,7 +65,7 @@ public class UserService {
 
         User authUser = userDAO.getByUsername(username);
 
-        if (authUser == null || !BCrypt.checkpw(password, authUser.getPassword())) {
+        if (authUser == null || !authUser.getIsActive() || !BCrypt.checkpw(password, authUser.getPassword())) {
             throw new AuthenticationException();
         }
 
@@ -72,9 +77,13 @@ public class UserService {
         if (user.getGivenName().trim().equals("") || user.getSurname().trim().equals(""))
             return false;
 
-        if (!isUsernameValid(user.getUsername())) return false;
+        if (!isUsernameValid(user.getUsername())) {
+            return false;
+        }
 
-        if (!isPasswordValid(user.getPassword())) return false;
+        if (!isPasswordValid(user.getPassword())) {
+            return false;
+        }
 
         return isEmailValid(user.getEmail());
     }
@@ -91,8 +100,6 @@ public class UserService {
 
     private boolean isEmailValid(String email) {
         if (email == null) return false;
-        return email.matches(
-            "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])\n"
-        );
+        return email.matches("^[^@\\s]+@[^@\\s.]+\\.[^@.\\s]+$");
     }
 }

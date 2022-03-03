@@ -8,7 +8,6 @@ public class UserResponse {
     private final String email;
     private final String givenName;
     private final String surname;
-    private final Boolean isActive;
     private final String role;
 
     public UserResponse(User user) {
@@ -17,7 +16,6 @@ public class UserResponse {
         email = user.getEmail();
         givenName = user.getGivenName();
         surname = user.getSurname();
-        isActive = user.getIsActive();
         role = user.getRole();
     }
 
@@ -41,10 +39,6 @@ public class UserResponse {
         return surname;
     }
 
-    public Boolean getActive() {
-        return isActive;
-    }
-
     public String getRole() {
         return role;
     }
@@ -57,7 +51,6 @@ public class UserResponse {
                 ", email='" + email + '\'' +
                 ", givenName='" + givenName + '\'' +
                 ", surname='" + surname + '\'' +
-                ", isActive=" + isActive +
                 ", role='" + role + '\'' +
                 '}';
     }

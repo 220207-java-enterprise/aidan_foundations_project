@@ -24,10 +24,9 @@ public class UserDAO implements CrudDAO<User> {
             conn.setAutoCommit(false);
 
             PreparedStatement pstmt = conn.prepareStatement(
-                "INSERT INTO ers_users" +
-                        "(user_id, username, email, password, given_name, surname, role_id)" +
-                    "VALUES" +
-                        "(?, ?, ?, ?, ?, ?, ?)"
+                "INSERT INTO ers_users " +
+                    "VALUES " +
+                        "(?, ?, ?, ?, ?, ?, ?, ?, ?)"
             );
 
             pstmt.setString(1, newUser.getUserId());
@@ -36,7 +35,9 @@ public class UserDAO implements CrudDAO<User> {
             pstmt.setString(4, newUser.getPassword());
             pstmt.setString(5, newUser.getGivenName());
             pstmt.setString(6, newUser.getSurname());
-            pstmt.setString(7, newUser.getRoleId());
+            pstmt.setBoolean(7, newUser.getIsApproved());
+            pstmt.setBoolean(8, newUser.getIsActive());
+            pstmt.setString(9, newUser.getRoleId());
 
             int rowsInserted = pstmt.executeUpdate();
 
@@ -124,7 +125,10 @@ public class UserDAO implements CrudDAO<User> {
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
-            ResultSet rs = conn.prepareStatement(rootSelect).executeQuery();
+            ResultSet rs = conn.prepareStatement(
+                            rootSelect +
+                            " WHERE is_active=true"
+                           ).executeQuery();
             while (rs.next()) {
                 User user = createUser(rs);
                 users.add(user);
@@ -193,6 +197,7 @@ public class UserDAO implements CrudDAO<User> {
         user.setPassword(rs.getString("password"));
         user.setGivenName(rs.getString("given_name"));
         user.setSurname(rs.getString("surname"));
+        user.setIsApproved(rs.getBoolean("is_approved"));
         user.setIsActive(rs.getBoolean("is_active"));
         user.setUserRoleObj(rs.getString("role_id"));
 
