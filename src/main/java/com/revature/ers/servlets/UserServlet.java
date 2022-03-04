@@ -125,8 +125,6 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("application/json");
-
         String[] reqFrags = req.getRequestURI().split("/");
         // /users/approve
         /*
@@ -141,7 +139,10 @@ public class UserServlet extends HttpServlet {
             if (jwt != null)
                 principal = tokenService.extractRequesterDetails(jwt);
 
-            if (!(principal != null && principal.getRoleId().equals("5b21bdca-37f4-468c-9ad2-21b1608f9a6d"))) {
+            if (principal == null) {
+                resp.setStatus(401);
+                return;
+            } else if (!principal.getRoleId().equals("5b21bdca-37f4-468c-9ad2-21b1608f9a6d")) {
                 resp.setStatus(403);
                 return;
             }

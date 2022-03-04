@@ -1,5 +1,6 @@
 package com.revature.ers.daos;
 
+import com.revature.ers.dtos.requests.UpdateReimbursementRequest;
 import com.revature.ers.models.Reimbursement;
 import com.revature.ers.models.Update;
 import com.revature.ers.util.ConnectionFactory;
@@ -34,7 +35,7 @@ public class ReimbursementDAO implements CrudDAO<Reimbursement> {
             pstmt.setTimestamp(4, null);
             pstmt.setString(5, newReimbursement.getDescription());
             pstmt.setString(6, null);
-            pstmt.setString(7, newReimbursement.getAuthor());
+            pstmt.setString(7, newReimbursement.getAuthorId());
             pstmt.setString(8, null);
             pstmt.setString(9, newReimbursement.getStatusId());
             pstmt.setString(10, newReimbursement.getTypeId());
@@ -84,9 +85,56 @@ public class ReimbursementDAO implements CrudDAO<Reimbursement> {
         return null;
     }
 
+
+    public void updateStatus(UpdateReimbursementRequest update) {
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+            conn.setAutoCommit(false);
+
+            PreparedStatement pstmt = conn.prepareStatement(
+            "UPDATE ers_reimbursements " +
+                "SET resolved=?, resolver_id=?, status_id=? " +
+                "WHERE reimb_id=? AND status_id='9e10b3e2-734b-4596-a89d-215bd9997691'"
+            );
+            pstmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+            pstmt.setString(2, update.getUpdates().getResolverId());
+            pstmt.setString(3, update.getUpdates().getStatusId());
+            pstmt.setString(4, update.getReimbId());
+
+            int rowsUpdated = pstmt.executeUpdate();
+
+            if (rowsUpdated != 1) {
+                conn.rollback();
+                throw new ResourcePersistenceException("Failed to persist user to database.");
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            throw new DataSourceException(e);
+        }
+
+    }
+
     @Override
     public void update(Update update) {
 
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+            conn.setAutoCommit(false);
+
+            PreparedStatement pstmt = conn.prepareStatement(this.createUpdateQuery(update));
+
+            int rowsUpdated = pstmt.executeUpdate();
+
+            if (rowsUpdated != 1) {
+                conn.rollback();
+                throw new ResourcePersistenceException("Failed to persist user to database.");
+            }
+
+            conn.commit();
+        } catch (SQLException e) {
+            throw new DataSourceException(e);
+        }
     }
 
     @Override
