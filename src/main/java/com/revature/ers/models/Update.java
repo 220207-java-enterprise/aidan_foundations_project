@@ -10,11 +10,11 @@ public class Update {
     final private List<String> columnUpdates;
 
     public Update(
-        String tableName,
-        String idType,
-        String id,
-        List<String> columnNames,
-        List<String> columnUpdates
+            String tableName,
+            String idType,
+            String id,
+            List<String> columnNames,
+            List<String> columnUpdates
     ) {
         this.tableName = tableName;
         this.idType = idType;
