@@ -38,7 +38,10 @@ public class UserServlet extends HttpServlet {
         if (jwt != null)
             principal = tokenService.extractRequesterDetails(jwt);
 
-        if (!(principal != null && principal.getRoleId().equals("5b21bdca-37f4-468c-9ad2-21b1608f9a6d"))) {
+        if (principal == null) {
+            resp.setStatus(401);
+            return;
+        } else if (!principal.getRoleId().equals("5b21bdca-37f4-468c-9ad2-21b1608f9a6d")) {
             resp.setStatus(403);
             return;
         }
@@ -89,7 +92,7 @@ public class UserServlet extends HttpServlet {
                 "password": "password",
                 "givenName": "givenName",
                 "surname": "surname",
-                "roleId": "roleId" (optional)
+                "roleId": "roleId" (optional defaults to employee)
             }
          */
         String jwt = req.getHeader("Authentication");

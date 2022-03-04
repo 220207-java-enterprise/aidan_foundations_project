@@ -101,17 +101,9 @@ public class User {
     public String getRoleId() {
         return this.userRole.roleId;
     }
-    public void setRoleId(String roleId) {
-        this.userRole.roleId = roleId;
-    }
-
     public String getRole() {
         return this.userRole.role;
     }
-    public void setRole(String role) {
-        this.userRole.role = role;
-    }
-
     public void setUserRoleObj(String roleId) {
         this.userRole = new UserRole(roleId);
     }
@@ -135,7 +127,7 @@ public class User {
         private String roleId;
         private String role;
 
-        public UserRole(
+        private UserRole (
                 String roleId
         ) {
             this.roleId = roleId;
@@ -151,7 +143,7 @@ public class User {
                     this.role = "admin";
                     break;
                 default:
-                    throw new InvalidRequestException("RoleID \"" + roleId + "\" is not a valid id.");
+                    throw new InvalidRequestException("RoleID \"" + roleId + "\" is not valid.");
             }
         }
 

@@ -1,6 +1,9 @@
 package com.revature.ers.models;
 
+import com.revature.ers.util.exceptions.InvalidRequestException;
+
 import java.sql.Timestamp;
+import java.util.UUID;
 
 public class Reimbursement {
     private String reimbId;
@@ -9,30 +12,24 @@ public class Reimbursement {
     private Timestamp resolved;
     private String description;
     private String paymentId;
+    private String authorId;
     private String resolverId;
     private String statusId;
-    private String typeId;
+    private Type type;
 
     public Reimbursement(
-        String reimbId,
         Float amount,
-        Timestamp submitted,
-        Timestamp resolved,
         String description,
-        String paymentId,
-        String resolverId,
-        String statusId,
         String typeId
     ) {
-        this.reimbId = reimbId;
         this.amount = amount;
-        this.submitted = submitted;
-        this.resolved = resolved;
         this.description = description;
-        this.paymentId = paymentId;
-        this.resolverId = resolverId;
-        this.statusId = statusId;
-        this.typeId = typeId;
+        this.type = new Type(typeId);
+
+        // generate id
+        this.reimbId = UUID.randomUUID().toString();
+        // set status to pending
+        this.statusId = "9e10b3e2-734b-4596-a89d-215bd9997691";
     }
 
     public String getReimbId() {
@@ -77,6 +74,13 @@ public class Reimbursement {
         this.paymentId = paymentId;
     }
 
+    public String getAuthorId() {
+        return authorId;
+    }
+    public void setAuthorId(String authorId) {
+        this.authorId = authorId;
+    }
+
     public String getResolverId() {
         return this.resolverId;
     }
@@ -92,9 +96,38 @@ public class Reimbursement {
     }
 
     public String getTypeId() {
-        return this.typeId;
+        return this.type.typeId;
     }
-    public void setTypeId() {
-        this.typeId = typeId;
+    public String getType() {
+        return this.type.type;
+    }
+   public void setTypeObj(String typeId) {
+        this.type = new Type(typeId);
+   }
+
+    private static class Type {
+        private String typeId;
+        private String type;
+
+        private Type(String typeId) {
+            this.typeId = typeId;
+
+            switch (typeId) {
+                case "883b46d2-3339-4c60-a612-4124f8e91201":
+                    this.type = "lodging";
+                    break;
+                case "e1717a12-753e-420e-9e4f-a1d1175ff50d":
+                    this.type = "travel";
+                    break;
+                case "2ffb7e93-6a4b-4b9a-94bd-7df47c368f76":
+                    this.type = "food";
+                    break;
+                case "18b4fac4-5e85-4722-9135-b56a30e9e856":
+                    this.type = "other";
+                    break;
+                default:
+                    throw new InvalidRequestException("TypeID \"" + typeId + "\" is not valid.");
+            }
+        }
     }
 }

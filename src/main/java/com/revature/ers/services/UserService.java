@@ -5,7 +5,6 @@ import com.revature.ers.dtos.requests.LoginRequest;
 import com.revature.ers.dtos.requests.NewUserRequest;
 import com.revature.ers.dtos.requests.UpdateUserRequest;
 import com.revature.ers.dtos.responses.UserResponse;
-import com.revature.ers.models.Update;
 import com.revature.ers.models.User;
 import com.revature.ers.util.exceptions.AuthenticationException;
 import com.revature.ers.util.exceptions.InvalidRequestException;

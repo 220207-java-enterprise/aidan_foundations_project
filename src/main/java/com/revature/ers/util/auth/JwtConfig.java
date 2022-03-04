@@ -10,7 +10,6 @@ import java.util.Properties;
 
 public class JwtConfig {
     private String salt;
-    private int expiration = 60 * 60 * 1000; // one hour
     private final SignatureAlgorithm sigAlg = SignatureAlgorithm.HS256;
     private final Key signingKey;
 
@@ -30,7 +29,8 @@ public class JwtConfig {
     }
 
     public int getExpiration() {
-        return expiration;
+        // one hour
+        return 60 * 60 * 1000;
     }
 
     public SignatureAlgorithm getSigAlg() {

@@ -7,18 +7,10 @@ import java.io.IOException;
 
 public class Driver {
     public static void main(String[] args) {
-        String json =
-            "{" +
-                "\"userId\": \"12345\"" +
-            "}";
+        Float value = (float) 12.34;
+        System.out.println(value);
+        System.out.println(value.intValue());
 
-        System.out.println("json: " + json);
-
-        try {
-            System.out.println(new ObjectMapper().reader().readValue(json, UpdateUserRequest.class));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 
