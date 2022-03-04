@@ -7,10 +7,8 @@ import com.revature.ers.dtos.requests.UpdateReimbursementRequest;
 import com.revature.ers.dtos.responses.Principal;
 import com.revature.ers.dtos.responses.ReimbursementResponse;
 import com.revature.ers.models.Reimbursement;
-import com.revature.ers.models.Update;
 import com.revature.ers.util.exceptions.InvalidRequestException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +34,13 @@ public class ReimbursementService {
 
     public List<ReimbursementResponse> getPendingReimbs() {
         return reimbursementDAO.getPending()
+                               .stream()
+                               .map(ReimbursementResponse::new)
+                               .collect(Collectors.toList());
+    }
+
+    public List<ReimbursementResponse> getAllReimbs() {
+        return reimbursementDAO.getAll()
                                .stream()
                                .map(ReimbursementResponse::new)
                                .collect(Collectors.toList());

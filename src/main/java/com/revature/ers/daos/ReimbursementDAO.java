@@ -82,7 +82,24 @@ public class ReimbursementDAO implements CrudDAO<Reimbursement> {
 
     @Override
     public List<Reimbursement> getAll() {
-        return null;
+        List<Reimbursement> reimbs = new ArrayList<>();
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            ResultSet rs = conn.prepareStatement(
+                    rootSelect + " WHERE status_id='65882559-1bab-4306-b99a-7b4c1705b7ef'"
+            ).executeQuery();
+
+            while (rs.next()) {
+                Reimbursement reimb = createReimb(rs);
+                reimbs.add(reimb);
+            }
+
+            return reimbs;
+
+        } catch (SQLException e) {
+            throw new DataSourceException(e);
+        }
     }
 
 

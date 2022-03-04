@@ -37,8 +37,6 @@ public class TokenService {
                                 .parseClaimsJws(token)
                                 .getBody();
 
-            System.out.println("claims: " + claims.toString());
-
             Principal principal = new Principal();
             principal.setUserId(claims.getId());
             principal.setUsername(claims.getSubject());

@@ -58,7 +58,8 @@ public class ReimbursementServlet extends HttpServlet {
             return;
         }
 
-        resp.setStatus(501);
+        List<ReimbursementResponse> reimbs = reimbursementService.getAllReimbs();
+        resp.getWriter().write(mapper.writeValueAsString(reimbs));
     }
 
     @Override
@@ -84,6 +85,8 @@ public class ReimbursementServlet extends HttpServlet {
         }
         else
             principal = tokenService.extractRequesterDetails(jwt);
+
+        System.out.println(principal.toString());
 
         reimbursementService.request(principal, newReimbursementRequest);
         resp.setStatus(202);
