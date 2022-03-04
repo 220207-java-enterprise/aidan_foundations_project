@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class ReimbursementServlet extends HttpServlet {
-    private final ReimbursementService  reimbursementService;
+    private final ReimbursementService reimbursementService;
     private final TokenService tokenService;
     private final ObjectMapper mapper;
 
@@ -32,6 +32,7 @@ public class ReimbursementServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json");
 
         String jwt = req.getHeader("Authentication");
         Principal principal = null;

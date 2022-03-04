@@ -1,5 +1,7 @@
 package com.revature.ers.dtos.responses;
 
+import com.revature.ers.models.Reimbursement;
+
 import java.sql.Timestamp;
 
 public class ReimbursementResponse {
@@ -9,51 +11,34 @@ public class ReimbursementResponse {
     private Timestamp resolved;
     private String description;
     private String payment_id;
-    private String author_id;
-    private String resolver_id;
-    private String status_id;
-    private String type_id;
+    private Author author;
+    private Resolver resolver;
+    private Status status;
+    private Type type;
 
-    public ReimbursementResponse (
-            String reimbId,
-            Float amount,
-            Timestamp submitted,
-            String description,
-            String author_id,
-            String status_id,
-            String type_id
-    ) {
-        this.reimbId = reimbId;
-        this.amount = amount;
-        this.submitted = submitted;
-        this.description = description;
-        this.author_id = author_id;
-        this.status_id = status_id;
-        this.type_id = type_id;
-    }
-
-    public ReimbursementResponse (
-            String reimbId,
-            Float amount,
-            Timestamp submitted,
-            Timestamp resolved,
-            String description,
-            String payment_id,
-            String author_id,
-            String resolver_id,
-            String status_id,
-            String type_id
-    ) {
-        this.reimbId = reimbId;
-        this.amount = amount;
-        this.submitted = submitted;
-        this.resolved = resolved;
-        this.description = description;
-        this.payment_id = payment_id;
-        this.author_id = author_id;
-        this.resolver_id = resolver_id;
-        this.status_id = status_id;
-        this.type_id = type_id;
+    public ReimbursementResponse (Reimbursement reimbursement) {
+        this.reimbId = reimbursement.getReimbId();
+        this.amount = reimbursement.getAmount();
+        this.submitted = reimbursement.getSubmitted();
+        this.resolved = reimbursement.getResolved();
+        this.description = reimbursement.getDescription();
+        this.payment_id = reimbursement.getPaymentId();
+        this.author = new Author(
+            reimbursement.getAuthorId(),
+            reimbursement.getAuthor()
+        );
+        this.resolver = new Resolver(
+            reimbursement.getResolverId(),
+            reimbursement.getResolver()
+        );
+        this.status = new Status(
+            reimbursement.getStatusId(),
+            reimbursement.getStatus()
+        );
+        this.type = new Type(
+            reimbursement.getTypeId(),
+            reimbursement.getType()
+        );
     }
 
     public String getReimbId() {
@@ -80,19 +65,139 @@ public class ReimbursementResponse {
         return payment_id;
     }
 
-    public String getAuthor_id() {
-        return author_id;
+    public Author getAuthor() {
+        return author;
     }
 
-    public String getResolver_id() {
-        return resolver_id;
+    public Resolver getResolver() {
+        return resolver;
     }
 
-    public String getStatus_id() {
-        return status_id;
+    public Status getStatus() {
+        return status;
     }
 
-    public String getType_id() {
-        return type_id;
+    public Type getType() {
+        return type;
+    }
+
+    @Override
+    public String toString() {
+        return "ReimbursementResponse{" +
+                "reimbId='" + reimbId + '\'' +
+                ", amount=" + amount +
+                ", submitted=" + submitted +
+                ", resolved=" + resolved +
+                ", description='" + description + '\'' +
+                ", payment_id='" + payment_id + '\'' +
+                ", author=" + author +
+                ", resolver=" + resolver +
+                ", status=" + status +
+                ", type=" + type +
+                '}';
+    }
+
+    private static class Author {
+        private String userId;
+        private String username;
+
+        public Author(String userId, String username) {
+            this.userId = userId;
+            this.username = username;
+        }
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        @Override
+        public String toString() {
+            return "Author{" +
+                    "userId='" + userId + '\'' +
+                    ", username='" + username + '\'' +
+                    '}';
+        }
+    }
+
+    private static class Resolver {
+        private String userId;
+        private String username;
+
+        public Resolver(String userId, String username) {
+            this.userId = userId;
+            this.username = username;
+        }
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        @Override
+        public String toString() {
+            return "Resolver{" +
+                    "userId='" + userId + '\'' +
+                    ", username='" + username + '\'' +
+                    '}';
+        }
+    }
+
+    private static class Status {
+        private String statusId;
+        private String status;
+
+        public Status(String statusId, String status) {
+            this.statusId = statusId;
+            this.status = status;
+        }
+
+        public String getStatusId() {
+            return statusId;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        @Override
+        public String toString() {
+            return "Status{" +
+                    "statusId='" + statusId + '\'' +
+                    ", status='" + status + '\'' +
+                    '}';
+        }
+    }
+
+    private static class Type {
+        private String statusId;
+        private String status;
+
+        public Type(String statusId, String status) {
+            this.statusId = statusId;
+            this.status = status;
+        }
+
+        public String getStatusId() {
+            return statusId;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        @Override
+        public String toString() {
+            return "Type{" +
+                    "statusId='" + statusId + '\'' +
+                    ", status='" + status + '\'' +
+                    '}';
+        }
     }
 }

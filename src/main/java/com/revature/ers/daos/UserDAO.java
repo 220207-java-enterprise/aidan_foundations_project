@@ -159,6 +159,7 @@ public class UserDAO implements CrudDAO<User> {
                     rootSelect +
                             " WHERE is_approved=false"
             ).executeQuery();
+
             while (rs.next()) {
                 User user = createUser(rs);
                 users.add(user);

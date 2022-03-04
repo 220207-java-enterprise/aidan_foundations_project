@@ -12,10 +12,14 @@ public class Reimbursement {
     private Timestamp resolved;
     private String description;
     private String paymentId;
-    private String authorId;
-    private String resolverId;
-    private String statusId;
+    private final Author author = new Author();
+    private final Resolver resolver = new Resolver();
+    private Status status;
     private Type type;
+
+    public Reimbursement() {
+        super();
+    }
 
     public Reimbursement(
         Float amount,
@@ -29,7 +33,7 @@ public class Reimbursement {
         // generate id
         this.reimbId = UUID.randomUUID().toString();
         // set status to pending
-        this.statusId = "9e10b3e2-734b-4596-a89d-215bd9997691";
+        this.status = new Status("9e10b3e2-734b-4596-a89d-215bd9997691");
     }
 
     public String getReimbId() {
@@ -75,24 +79,41 @@ public class Reimbursement {
     }
 
     public String getAuthorId() {
-        return authorId;
+        return this.author.userId;
     }
-    public void setAuthorId(String authorId) {
-        this.authorId = authorId;
+    public void setAuthorId(String userId) {
+        this.author.userId = userId;
+    }
+
+    public String getAuthor() {
+        return this.author.username;
+    }
+    public void setAuthor (String username) {
+        this.author.username = username;
     }
 
     public String getResolverId() {
-        return this.resolverId;
+        return this.resolver.userId;
     }
-    public void setResolverId(String resolverId) {
-        this.resolverId = resolverId;
+    public void setResolverId(String userId) {
+        this.resolver.userId = userId;
+    }
+
+    public String getResolver() {
+        return this.resolver.username;
+    }
+    public void setResolver(String username) {
+        this.resolver.username = username;
     }
 
     public String getStatusId() {
-        return this.statusId;
+        return this.status.statusId;
     }
-    public void setStatusId(String statusId) {
-        this.statusId = statusId;
+    public String getStatus() {
+        return this.status.status;
+    }
+    public void setStatusObj(String statusId) {
+        this.status = new Status(statusId);
     }
 
     public String getTypeId() {
@@ -105,9 +126,42 @@ public class Reimbursement {
         this.type = new Type(typeId);
    }
 
-    private static class Type {
-        private String typeId;
-        private String type;
+   private static class Author {
+        private String userId;
+        private String username;
+   }
+
+   private static class Resolver {
+        private String userId;
+        private String username;
+   }
+
+   private static class Status {
+        private final String statusId;
+        private final String status;
+
+        private Status(String statusId) {
+            this.statusId = statusId;
+
+            switch (statusId) {
+                case "9e10b3e2-734b-4596-a89d-215bd9997691":
+                    this.status = "pending";
+                    break;
+                case "65882559-1bab-4306-b99a-7b4c1705b7ef":
+                    this.status = "approved";
+                    break;
+                case "6281dfcf-c602-402a-a878-a0368ca29641":
+                    this.status = "denied";
+                    break;
+                default:
+                    throw new InvalidRequestException("StatusId \"" + statusId + "\" is not valid.");
+            }
+        }
+   }
+
+   private static class Type {
+        private final String typeId;
+        private final String type;
 
         private Type(String typeId) {
             this.typeId = typeId;
@@ -126,7 +180,7 @@ public class Reimbursement {
                     this.type = "other";
                     break;
                 default:
-                    throw new InvalidRequestException("TypeID \"" + typeId + "\" is not valid.");
+                    throw new InvalidRequestException("TypeId \"" + typeId + "\" is not valid.");
             }
         }
     }
