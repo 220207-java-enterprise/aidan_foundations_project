@@ -3,7 +3,6 @@ package com.revature.ers.daos;
 import com.revature.ers.dtos.requests.UpdateReimbursementRequest;
 import com.revature.ers.models.Reimbursement;
 import com.revature.ers.models.Update;
-import com.revature.ers.models.User;
 import com.revature.ers.util.ConnectionFactory;
 import com.revature.ers.util.exceptions.DataSourceException;
 import com.revature.ers.util.exceptions.ResourcePersistenceException;
@@ -77,31 +76,6 @@ public class ReimbursementDAO implements CrudDAO<Reimbursement> {
         }
     }
 
-    public Reimbursement getById(String id) {
-        return null;
-    }
-
-    public List<Reimbursement> getPending() {
-        List<Reimbursement> reimbs = new ArrayList<>();
-
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-
-            ResultSet rs = conn.prepareStatement(
-                rootSelect + " WHERE status_id='9e10b3e2-734b-4596-a89d-215bd9997691'"
-            ).executeQuery();
-
-            while (rs.next()) {
-                Reimbursement reimb = createReimb(rs);
-                reimbs.add(reimb);
-            }
-
-            return reimbs;
-
-        } catch (SQLException e) {
-            throw new DataSourceException(e);
-        }
-    }
-
     @Override
     public List<Reimbursement> getAll() {
         List<Reimbursement> reimbs = new ArrayList<>();
@@ -123,7 +97,6 @@ public class ReimbursementDAO implements CrudDAO<Reimbursement> {
             throw new DataSourceException(e);
         }
     }
-
 
     public void updateStatus(UpdateReimbursementRequest update) {
 

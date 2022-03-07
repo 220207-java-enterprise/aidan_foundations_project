@@ -22,10 +22,8 @@ public class ContextLoaderListener implements ServletContextListener {
         ObjectMapper mapper = new ObjectMapper();
         TokenService tokenService = new TokenService(new JwtConfig());
 
-        UserDAO userDAO = new UserDAO();
-
-        UserService userService = new UserService(userDAO);
-        ReimbursementService reimbursementService = new ReimbursementService(new ReimbursementDAO(), userDAO);
+        UserService userService = new UserService(new UserDAO());
+        ReimbursementService reimbursementService = new ReimbursementService(new ReimbursementDAO());
 
         UserServlet userServlet = new UserServlet(userService, tokenService, mapper);
         ReimbursementServlet reimbursementServlet = new ReimbursementServlet(reimbursementService, tokenService, mapper);
