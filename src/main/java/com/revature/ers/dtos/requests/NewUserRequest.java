@@ -11,6 +11,18 @@ public class NewUserRequest {
     private String roleId;
     private Boolean requesterIsAdmin = false;
 
+    public NewUserRequest() {
+        super();
+    }
+
+    public NewUserRequest(String username, String email, String password, String givenName, String surname) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.givenName = givenName;
+        this.surname = surname;
+    }
+
     public String getUsername() {
         return username;
     }

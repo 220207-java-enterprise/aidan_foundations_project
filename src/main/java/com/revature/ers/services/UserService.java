@@ -84,7 +84,7 @@ public class UserService {
                       .collect(Collectors.toList());
     }
 
-    private boolean isUserValid(User user) {
+    public boolean isUserValid(User user) {
         // First name and last name are not just empty strings or filled with whitespace
         if (user.getGivenName().trim().equals("") || user.getSurname().trim().equals(""))
             return false;
