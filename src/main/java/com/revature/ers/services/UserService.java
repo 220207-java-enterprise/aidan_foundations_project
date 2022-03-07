@@ -11,7 +11,9 @@ import com.revature.ers.util.exceptions.InvalidRequestException;
 import com.revature.ers.util.exceptions.ResourceConflictException;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class UserService {
@@ -27,13 +29,19 @@ public class UserService {
         if (!isUserValid(newUser))
             throw new InvalidRequestException();
 
-        User usernameMatch = userDAO.getByUsername(newUser.getUsername());
-        User emailMatch = userDAO.getByEmail(newUser.getEmail());
+        Map<String, Object> usernameParam = new HashMap<>();
+        usernameParam.put("username", newUser.getUsername());
+        List<User> usernameMatches = userDAO.getByParams(usernameParam);
 
-        if (usernameMatch != null || emailMatch != null) {
+
+        Map<String, Object> emailParam = new HashMap<>();
+        emailParam.put("email", newUser.getEmail());
+        List<User> emailMatches = userDAO.getByParams(emailParam);
+
+        if (usernameMatches.size() != 0 || emailMatches.size() != 0) {
             String msg = "The values provided for the following fields are already taken by other users: ";
-            if (usernameMatch != null) msg += "username ";
-            if (emailMatch != null) msg += "email";
+            if (usernameMatches.size() != 0) msg += "username ";
+            if (emailMatches.size() != 0) msg += "email";
             throw new ResourceConflictException(msg);
         }
 
@@ -61,11 +69,17 @@ public class UserService {
         if (!isUsernameValid(username) || !isPasswordValid(password))
             throw new InvalidRequestException("Invalid credentials provided");
 
-        User authUser = userDAO.getByUsername(username);
+        Map<String, Object> usernameParam = new HashMap<>();
+        usernameParam.put("username", username);
+        List<User> authUserList = userDAO.getByParams(usernameParam);
 
-        if (authUser == null || !authUser.getIsActive() || !BCrypt.checkpw(password, authUser.getPassword())) {
+        if (authUserList.size() == 0)
             throw new AuthenticationException();
-        }
+
+        User authUser = authUserList.get(0);
+
+        if (!authUser.getIsActive() || !BCrypt.checkpw(password, authUser.getPassword()))
+            throw new AuthenticationException();
 
         return authUser;
     }
@@ -78,7 +92,10 @@ public class UserService {
     }
 
     public List<UserResponse> getPendingUsers() {
-        return userDAO.getPending()
+        Map<String, Object> pendingParam = new HashMap<>();
+        pendingParam.put("is_approved", false);
+
+        return userDAO.getByParams(pendingParam)
                       .stream()
                       .map(UserResponse::new)
                       .collect(Collectors.toList());

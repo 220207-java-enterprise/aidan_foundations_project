@@ -17,9 +17,6 @@ public interface CrudDAO<T> {
     // Get (By Search Param)
     List<T> getByParams(Map<String, Object> params);
 
-    // GET (1)
-    T getById(String id);
-
     // GET (All)
     List<T> getAll();
 
