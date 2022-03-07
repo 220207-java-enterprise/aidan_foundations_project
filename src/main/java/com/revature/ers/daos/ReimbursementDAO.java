@@ -3,6 +3,7 @@ package com.revature.ers.daos;
 import com.revature.ers.dtos.requests.UpdateReimbursementRequest;
 import com.revature.ers.models.Reimbursement;
 import com.revature.ers.models.Update;
+import com.revature.ers.models.User;
 import com.revature.ers.util.ConnectionFactory;
 import com.revature.ers.util.exceptions.DataSourceException;
 import com.revature.ers.util.exceptions.ResourcePersistenceException;
@@ -10,6 +11,7 @@ import com.revature.ers.util.exceptions.ResourcePersistenceException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ReimbursementDAO implements CrudDAO<Reimbursement> {
     private final String rootSelect =
@@ -48,6 +50,27 @@ public class ReimbursementDAO implements CrudDAO<Reimbursement> {
             }
 
             conn.commit();
+
+        } catch (SQLException e) {
+            throw new DataSourceException(e);
+        }
+    }
+
+    @Override
+    public List<Reimbursement> getByParams(Map<String, Object> paramsMap) {
+        List<Reimbursement> reimbursements = new ArrayList<>();
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            PreparedStatement query = createSearchQuery(conn, rootSelect, paramsMap);
+
+            ResultSet rs = query.executeQuery();
+            while (rs.next()) {
+                Reimbursement reimbursement = createReimb(rs);
+                reimbursements.add(reimbursement);
+            }
+
+            return reimbursements;
 
         } catch (SQLException e) {
             throw new DataSourceException(e);

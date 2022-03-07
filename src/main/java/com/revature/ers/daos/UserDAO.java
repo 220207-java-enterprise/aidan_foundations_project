@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class UserDAO implements CrudDAO<User> {
 
@@ -79,6 +80,27 @@ public class UserDAO implements CrudDAO<User> {
             }
 
             conn.commit();
+
+        } catch (SQLException e) {
+            throw new DataSourceException(e);
+        }
+    }
+
+    @Override
+    public List<User> getByParams(Map<String, Object> paramsMap) {
+        List<User> users = new ArrayList<>();
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            PreparedStatement query = createSearchQuery(conn, rootSelect, paramsMap);
+
+            ResultSet rs = query.executeQuery();
+            while (rs.next()) {
+                User user = createUser(rs);
+                users.add(user);
+            }
+
+            return users;
 
         } catch (SQLException e) {
             throw new DataSourceException(e);
